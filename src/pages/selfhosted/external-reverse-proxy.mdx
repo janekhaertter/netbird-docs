@@ -104,7 +104,7 @@ All reverse proxy configurations for the combined container must route the follo
 The combined container includes an embedded STUN server that still needs to be directly accessible on UDP port 3478.
 </Note>
 
-Not all of these routes need to be reachable from the internet. Installed NetBird clients never use the `/ws-proxy/` routes; only the browser client the dashboard runs for browser SSH and RDP does. To keep the dashboard, `/api`, `/ws-proxy/` and `/management.ProxyService/` internal while clients keep working, see [Keep the Self-Hosted Dashboard and API Private](/selfhosted/maintenance/private-management-plane).
+To keep the dashboard and the API off the internet while clients keep working, see [Keep the Self-Hosted Dashboard and API Private](/selfhosted/maintenance/private-management-plane).
 
 ### Docker Compose for External Proxy (Combined)
 

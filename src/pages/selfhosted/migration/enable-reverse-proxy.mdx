@@ -84,8 +84,6 @@ docker exec -it netbird-server \
 ```
 
 and replace `config.yaml` with `config.yaml.enterprise` in the `list` and `revoke` commands below. If it prints anything else, use the commands as shown.
-
-If the proxy is already running with a token from the old store, set the new token as `NB_PROXY_TOKEN` in `proxy.env` ([Step 3](#step-3-add-the-proxy-service-to-docker-compose-yml)) and recreate the proxy with `docker compose up -d proxy`. The old token is unused, because the server never reads that store; revoking it with `--config /etc/netbird/config.yaml` is optional cleanup.
 </Warning>
 
 **Combined container** (`netbirdio/netbird-server`):
