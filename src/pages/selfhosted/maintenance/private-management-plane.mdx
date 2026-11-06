@@ -36,7 +36,7 @@ In the quickstart's layout, the NetBird Proxy connects to the server over the Do
 
 ## How the split works: one name, two kinds of paths
 
-The server itself does not separate its services: every request to `netbird.example.com` reaches the same process, which routes it by its path and content type. So Traefik, the reverse proxy in front of it, is the only place where you can let one path through from the internet and keep another internal.
+The server itself does not separate its services: every request to `netbird.example.com` reaches the same process, which routes it by its path. So Traefik, the reverse proxy in front of it, is the only place where you can let one path through from the internet and keep another internal.
 
 Everything except STUN (UDP `3478`) runs on TCP `443`, so a port firewall cannot make this split: keep TCP `443` open to everyone and let Traefik decide by path.
 
@@ -53,7 +53,7 @@ The office admins reach the server at its private address: their DNS answers `ne
 <Warning>
 Make sure that no one but admins and the hosts you added arrives from an address on the allowlist. A NetBird routing peer with masquerade, including one that acts as an exit node, replaces the source address of every user it routes with its own, so Traefik treats those users as internal. Two kinds of allowlist entry let them in:
 
-- **A whole subnet that NetBird routes into.** A remote user reaching the server through a NetBird network resource in that subnet gets the dashboard (`200`) and the API up to its login (`401`). With exact admin addresses on the allowlist, the same user gets `403`.
+- **A whole subnet that NetBird routes into.** A remote user reaching the server through a NetBird network resource in that subnet gets the dashboard (`200`) and the API up to its login (`401`).
 - **The exact address of a host that runs a routing peer or exit node.** A remote user who reaches the server's private address, `10.0.2.10`, through that peer gets the dashboard (`200`) and the API up to its login (`401`), whether they reach it through a network resource or use the peer only as their exit node.
 
 Allowlist a routing peer's address only when that peer exists for admin access and routes nothing else. Never allowlist an address other devices share, such as an office NAT address: it admits every device behind it.
