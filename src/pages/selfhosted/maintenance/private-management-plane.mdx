@@ -37,11 +37,11 @@ The NetBird clients you install never use `/ws-proxy/`. Only the browser client 
 
 In the quickstart's layout, the NetBird Proxy connects to the server over the Docker network (`http://netbird-server:80`), not through Traefik, so a Proxy on the same host needs no allowlist entry. A NetBird Proxy on another host reaches the server through Traefik instead: put its address on the allowlist, or its connection is refused (`PermissionDenied` in its log).
 
-## Why Traefik, not a firewall, makes the split
+## Why the split happens in Traefik
 
-The NetBird server does not separate its services: Management, Signal, the relay, `/oauth2` and the API all reach the same `netbird-server` process, which routes each request by its path (gRPC by its content type). The dashboard is a separate container. So Traefik, the reverse proxy in front of both, is the only place where you can let one path through from the internet and keep another internal.
+The NetBird server has no setting to restrict a path by source address: Management, Signal, the relay, `/oauth2` and the API all run in one `netbird-server` process. The dashboard runs in its own container, not in that process, but Traefik serves it at the same name and port. So only Traefik can let one path through from the internet and keep another internal.
 
-Everything except STUN (UDP `3478`) runs on TCP `443`, so a port firewall cannot make this split: keep TCP `443` open to everyone and let Traefik decide by path.
+Everything except STUN (UDP `3478`) runs on TCP `443`, so a port firewall cannot make this split: keep TCP `443` open to everyone.
 
 ## When not to do this
 
