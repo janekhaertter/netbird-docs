@@ -2,7 +2,7 @@
 
 import {Warning} from "@/components/mdx";
 
-You may want the dashboard and the API of your self-hosted NetBird server reachable only by admins, not from the whole internet. The quickstart makes every endpoint of the server public at one name, such as `netbird.example.com`, but only the client endpoints need to be. After the steps on this page, Traefik splits them:
+You may want the dashboard and the API of your self-hosted NetBird server reachable only by admins, not from the whole internet. The quickstart makes every endpoint of the server public at one name, such as `netbird.example.com`. After the steps on this page, Traefik splits them:
 
 - **Client endpoints stay public:** Management, Signal, `/relay`, `/oauth2`, STUN, and on Enterprise `/flow.FlowService/`. NetBird clients connect to these from anywhere.
 - **Admin endpoints are reachable only from addresses you allowlist or over NetBird:** the dashboard, the REST API (`/api`), `/ws-proxy/` (the dashboard's browser SSH and RDP) and `/management.ProxyService/` (where the NetBird Proxy, NetBird's own reverse proxy feature, connects).
@@ -30,7 +30,7 @@ TCP `80` does not need to be public. The quickstart's Traefik obtains and renews
 |---|---|---|
 | The dashboard (the web UI at `https://netbird.example.com/` and its pages) | Admins' browsers | `403` from any address not on the [allowlist](#allowlist-exact-sources-not-subnets); admins elsewhere reach it [over NetBird](#reach-the-private-dashboard-by-name) |
 | `/api` | The dashboard, scripts and other API tools | Tools calling the API from the internet get `403`, even with a valid access token |
-| `/management.ProxyService/` | The NetBird Proxy (NetBird's reverse proxy feature) | A NetBird Proxy on another host is refused unless its address is on the allowlist |
+| `/management.ProxyService/` | The NetBird Proxy | A NetBird Proxy on another host is refused unless its address is on the allowlist |
 | `/ws-proxy/` | The browser client behind the dashboard's browser SSH and RDP | Browser SSH and RDP work only for admins who can open the dashboard |
 
 The NetBird clients you install never use `/ws-proxy/`. Only the browser client does: a NetBird client the dashboard runs in the browser tab for browser SSH and RDP. The admin's browser downloads the browser client from `pkgs.netbird.io` by default, so it needs that egress. To serve the browser client from another location, set `NETBIRD_WASM_PATH` in the dashboard container's environment to that URL.
@@ -39,7 +39,7 @@ In the quickstart's layout, the NetBird Proxy connects to the server over the Do
 
 ## Why Traefik, not a firewall, makes the split
 
-The server itself does not separate its services: every request to `netbird.example.com` reaches the same process, which routes it by its path. So Traefik, the reverse proxy in front of it, is the only place where you can let one path through from the internet and keep another internal.
+The NetBird server does not separate its services: Management, Signal, the relay, `/oauth2` and the API all reach the same `netbird-server` process, which routes each request by its path (gRPC by its content type). The dashboard is a separate container. So Traefik, the reverse proxy in front of both, is the only place where you can let one path through from the internet and keep another internal.
 
 Everything except STUN (UDP `3478`) runs on TCP `443`, so a port firewall cannot make this split: keep TCP `443` open to everyone and let Traefik decide by path.
 
