@@ -2,7 +2,9 @@
 
 import {Warning} from "@/components/mdx";
 
-A self-hosted NetBird server offers two kinds of services, and the quickstart makes all of them public at one name, such as `netbird.example.com`. Connection services are what every client needs from anywhere: Management, Signal, `/relay`, `/oauth2`, STUN, and on Enterprise `/flow.FlowService/`. Admin services are the dashboard, the REST API (`/api`), `/ws-proxy/` (for the dashboard's browser SSH and RDP) and `/management.ProxyService/` (where the NetBird Proxy connects). After the steps on this page, the connection services are still public, and the admin services are reachable only from your internal network or over NetBird.
+You may want only admins on your internal network, or connected over NetBird, to reach the dashboard and the API of your self-hosted NetBird server. By default, the quickstart makes every endpoint of the server public at one name, such as `netbird.example.com`. This page shows which endpoints must stay public, which can be internal-only, and how to restrict the internal ones in Traefik.
+
+The server has two sets of endpoints. Client endpoints are what NetBird clients connect to from anywhere: Management, Signal, `/relay`, `/oauth2`, STUN, and on Enterprise `/flow.FlowService/`. Admin endpoints serve admins and the NetBird Proxy: the dashboard, the REST API (`/api`), `/ws-proxy/` (for the dashboard's browser SSH and RDP) and `/management.ProxyService/` (where the NetBird Proxy connects). After the steps on this page, the client endpoints are still public, and the admin endpoints are reachable only from addresses you allowlist or over NetBird.
 
 Running example: the server, `netbird.example.com`, has the public address `203.0.113.10` and the private address `10.0.2.10`. The office LAN is `10.0.1.0/24`, with the admins' workstations at `10.0.1.20` and `10.0.1.21`. One admin, Dana, works from home with the NetBird client installed.
 
@@ -34,7 +36,7 @@ The NetBird clients you install never use `/ws-proxy/`. Only the browser client 
 
 In the quickstart's layout, the NetBird Proxy connects to the server over the Docker network (`http://netbird-server:80`), not through Traefik, so a Proxy on the same host needs no allowlist entry. A NetBird Proxy on another host reaches the server through Traefik instead: put its address on the allowlist, or its connection is refused (`PermissionDenied` in its log).
 
-## How the split works: one name, two kinds of paths
+## How the split works: one name, two sets of endpoints
 
 The server itself does not separate its services: every request to `netbird.example.com` reaches the same process, which routes it by its path. So Traefik, the reverse proxy in front of it, is the only place where you can let one path through from the internet and keep another internal.
 
