@@ -39,7 +39,7 @@ In the quickstart's layout, the NetBird Proxy connects to the server over the Do
 
 ## Why the split happens in Traefik
 
-Management, Signal, `/relay`, `/oauth2`, `/api`, `/ws-proxy/` and `/management.ProxyService/` all run in one `netbird-server` process, and that process has no setting to restrict a path by source address. The dashboard runs in its own container, not in that process. Everything except STUN (UDP `3478`) runs on TCP `443`, so a port firewall cannot separate the paths either: keep TCP `443` open to everyone. Traefik sits in front of both `netbird-server` and the dashboard, at the same name and port, so the split has to happen in Traefik.
+The client endpoints Management, Signal, `/relay` and `/oauth2`, and the admin endpoints `/api`, `/ws-proxy/` and `/management.ProxyService/`, all run in one `netbird-server` process, which has no setting to restrict an endpoint by source address. The dashboard runs in its own container, not in the same process as the API. Every endpoint except STUN (UDP `3478`), the dashboard included, runs on TCP `443`, so a port firewall cannot separate them either: keep TCP `443` open to everyone. Traefik sits in front of both `netbird-server` and the dashboard, at the same name and port, so the split has to happen in Traefik.
 
 ## When not to do this
 
