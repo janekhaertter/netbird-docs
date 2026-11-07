@@ -2,7 +2,7 @@
 
 import {Warning} from "@/components/mdx";
 
-You may want the dashboard and the API of your self-hosted NetBird server reachable only by admins, not from the whole internet. The quickstart makes every endpoint of the server public at one name, such as `netbird.example.com`. After the steps on this page, Traefik splits them:
+You may want the dashboard and the API of your self-hosted NetBird server reachable only by admins. The quickstart makes every endpoint of the server public at one name, such as `netbird.example.com`. After the steps on this page, Traefik splits them:
 
 - **Client endpoints stay public:** Management, Signal, `/relay`, `/oauth2`, STUN, and on Enterprise `/flow.FlowService/`. NetBird clients connect to these from anywhere.
 - **Admin endpoints are reachable only from addresses you allowlist or over NetBird:** the dashboard, the REST API (`/api`), `/ws-proxy/` (the dashboard's browser SSH and RDP) and `/management.ProxyService/` (where the NetBird Proxy, NetBird's own reverse proxy feature, connects).
